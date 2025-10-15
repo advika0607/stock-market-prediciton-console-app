@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.Python
+venv/
+env/
+.venv/
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Backend
+backend/.env
+backend/__pycache__/
+backend/venv/
+backend/*.log
+
+# Data, models, visualizations (if not already present)
+data/
+models/
+visualizations/
