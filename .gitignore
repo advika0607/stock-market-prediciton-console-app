@@ -18,6 +18,6 @@ backend/venv/
 backend/*.log
 
 # Data, models, visualizations (if not already present)
-data/
-models/
-visualizations/
+#data/
+#models/
+#visualizations/
