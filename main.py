@@ -30,8 +30,37 @@ def step_1_data_collection(ticker='AAPL'):
     """Step 1: Collect stock data"""
     print_header("STEP 1: DATA COLLECTION")
     
+    # Validate ticker first
+    print(f"Validating ticker: {ticker}...")
+    try:
+        import yfinance as yf
+        test_stock = yf.Ticker(ticker)
+        test_data = test_stock.history(period="5d")
+        
+        if test_data.empty:
+            print(f"✗ Ticker {ticker} appears to be invalid or has no data")
+            print(f"\nTrying alternative tickers...")
+            
+            alternatives = ['AAPL', 'MSFT', 'GOOGL', 'AMZN']
+            for alt in alternatives:
+                print(f"  Testing {alt}...")
+                alt_stock = yf.Ticker(alt)
+                alt_data = alt_stock.history(period="5d")
+                if not alt_data.empty:
+                    print(f"✓ {alt} is valid! Using {alt} instead.")
+                    ticker = alt
+                    break
+            else:
+                print("✗ Could not find any valid ticker")
+                return None
+        else:
+            print(f"✓ Ticker {ticker} is valid")
+    except Exception as e:
+        print(f"⚠ Warning during validation: {str(e)}")
+    
+    # Fetch data
     collector = StockDataCollector(ticker)
-    data = collector.fetch_data()
+    data = collector.fetch_data(retry_count=3)
     
     if data is not None:
         print(f"\n✓ Data shape: {data.shape}")
@@ -48,6 +77,14 @@ def step_1_data_collection(ticker='AAPL'):
         return data
     else:
         print("✗ Failed to collect data")
+        print("\n" + "="*80)
+        print("TROUBLESHOOTING:")
+        print("="*80)
+        print("1. Check if ticker symbol is correct (e.g., AAPL, GOOGL, MSFT)")
+        print("2. Verify internet connection")
+        print("3. Try these known working tickers: AAPL, MSFT, GOOGL, AMZN, META")
+        print("4. Wait a few minutes and try again (Yahoo Finance may be busy)")
+        print("\nExample command: python main.py --ticker AAPL")
         return None
 
 
